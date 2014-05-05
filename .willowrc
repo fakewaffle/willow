@@ -1,0 +1,4 @@
+{
+	"include" : "**/*.js",
+	"exclude" : "(libs/|node_modules/|config/|data/|.min.js)"
+}

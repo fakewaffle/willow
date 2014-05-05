@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+'use strict';
+
+// Load other modules
+var program       = require( 'commander' );
+var getFiles      = require( '../src/common/getFiles' );
+var startMongoose = require( '../src/common/startMongoose' );
+var startExpress  = require( '../src/common/startExpress' );
+
+require( 'colors' );
+
+program.version( require( '../package.json' ).version );
+
+program
+	.command( 'cr' )
+	.description( 'Runs escomplex and saves to MongoDB' )
+
+	.action( function ( cmd ) {
+		startMongoose( function () {
+			var cr = require( '../src/reports' );
+
+			cr( getFiles(), function () {
+				process.exit();
+			} );
+		} );
+	} );
+
+program
+	.command( 'start' )
+	.description( 'Starts the web server' )
+
+	.action( function ( cmd ) {
+		startMongoose( function () {
+			startExpress( function () {
+
+			} )
+		} );
+	} );
+
+program.parse( process.argv );

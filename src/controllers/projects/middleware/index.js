@@ -6,6 +6,14 @@ var mongoose = require( 'mongoose' );
 // Load models
 var Report = mongoose.model( 'Report' );
 
+var fields = {
+	'dependencies' : 0,
+	'functions'    : 0,
+	'aggregate'    : 0
+};
+
+var options = { 'sort' : { 'date' : -1 } };
+
 module.exports = {
 
 	'getAllProjects' : function ( request, response, next ) {
@@ -34,21 +42,41 @@ module.exports = {
 		} );
 	},
 
-	'getProjectComplexityReportByPath' : function ( request, response, next  ) {
-		var path = request.params[ 0 ];
+	'getAllProjectComplexityReports' : function ( request, response, next  ) {
+		var conditions = { 'project' : request.params.project };
+		var options    = { 'sort' : { 'path' : 1, 'date' : -1 } };
 
+		Report.find( conditions, fields, options, function ( error, reports ) {
+			if ( error ) {
+				return next( error );
+			}
+
+			response.send( reports );
+		} );
+	},
+
+	'getComplexityReportsByProjectAndPath' : function ( request, response, next  ) {
 		var conditions = {
 			'project' : request.params.project,
-			'path'    : path
+			'path'    : request.params[ 0 ]
 		};
 
-		var fields = {
-			'dependencies' : 0,
-			'functions'    : 0,
-			'aggregate'    : 0
+		Report.find( conditions, fields, options, function ( error, reports ) {
+			if ( error ) {
+				return next( error );
+			}
+
+			response.send( reports );
+		} );
+	},
+
+	'getLatestComplexityReportByProjectAndPath' : function ( request, response, next  ) {
+		var conditions = {
+			'project' : request.params.project,
+			'path'    : request.params[ 0 ]
 		};
 
-		Report.find( conditions, fields, { 'sort' : { 'date' : -1 } }, function ( error, report ) {
+		Report.findOne( conditions, null, options, function ( error, report ) {
 			if ( error ) {
 				return next( error );
 			}

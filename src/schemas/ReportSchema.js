@@ -7,7 +7,7 @@ var Schema   = mongoose.Schema;
 var Report = new Schema( {
 	'project'         : String,
 	'path'            : String,
-	'checksum'        : { 'type' : String, 'unique' : true },
+	'checksum'        : String,
 	'date'            : Date,
 	'maintainability' : Number,
 	'params'          : Number,

@@ -25,14 +25,20 @@ module.exports = [
 
 	{
 		'method'     : 'get',
-		'route'      : 'projects/:project/complexity-reports/:reportId',
-		'middleware' : require( '../complexity-reports/middleware' ).getComplexityReportById
+		'route'      : 'projects/:project/complexity-reports',
+		'middleware' : middleware.getAllProjectComplexityReports
 	},
 
 	{
 		'method'     : 'get',
-		'route'      : 'projects/:project/complexity-reports/paths/*',
-		'middleware' : middleware.getProjectComplexityReportByPath
+		'route'      : 'projects/:project/complexity-reports/*/latest',
+		'middleware' : middleware.getLatestComplexityReportByProjectAndPath
+	},
+
+	{
+		'method'     : 'get',
+		'route'      : 'projects/:project/complexity-reports/*',
+		'middleware' : middleware.getComplexityReportsByProjectAndPath
 	}
 
 ];

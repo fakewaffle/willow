@@ -9,8 +9,8 @@ var directory = require( 'serve-index' );
 var log       = require( './log' );
 var app       = express();
 
-app.use( express.static( path.join( __dirname, '../' ) ) );
-app.use( directory( path.join( __dirname, '../' ), { 'icons' : true } ) );
+app.use( express.static( path.join( __dirname, '../../public' ) ) );
+app.use( directory( path.join( __dirname, '../../public' ), { 'icons' : true } ) );
 
 module.exports = function startMongoose ( callback ) {
 	app.listen( 3000, function ( error ) {

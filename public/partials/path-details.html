@@ -1,0 +1,64 @@
+<div class="row">
+	<div class="page-header">
+		<h2>{{path}}</h2>
+	</div>
+
+	<h3>Overview</h3>
+	<dl class="dl-horizontal">
+		<dt>Maintainability</dt>
+		<dd>{{report.maintainability}}</dd>
+
+		<dt>Cyclomatic Complexity</dt>
+		<dd>{{report.aggregate.cyclomatic}}</dd>
+
+		<dt>Dependencies</dt>
+		<dd>{{report.dependencies.length + 1}}</dd>
+
+		<dt>Functions</dt>
+		<dd>{{report.functions.length + 1}}</dd>
+	</dl>
+
+	<h3>Source Lines of Code</h3>
+	<dl class="dl-horizontal">
+		<dt>Logical</dt>
+		<dd>{{report.aggregate.sloc.logical}}</dd>
+
+		<dt>Physical</dt>
+		<dd>{{report.aggregate.sloc.physical}}</dd>
+	</dl>
+
+	<h3>Halstead</h3>
+	<dl class="dl-horizontal">
+		<dt>Halstead Length</dt>
+		<dd>{{report.aggregate.halstead.length}}</dd>
+
+		<dt>Halstead Vocabulary</dt>
+		<dd>{{report.aggregate.halstead.vocabulary}}</dd>
+
+		<dt>Halstead Difficulty</dt>
+		<dd>{{report.aggregate.halstead.difficulty}}</dd>
+
+		<dt>Halstead Volume</dt>
+		<dd>{{report.aggregate.halstead.volume}}</dd>
+
+		<dt>Halstead Effort</dt>
+		<dd>{{report.aggregate.halstead.effort}}</dd>
+
+		<dt>Halstead Bugs</dt>
+		<dd>{{report.aggregate.halstead.bugs}}</dd>
+
+		<dt>Halstead Time</dt>
+		<dd>{{report.aggregate.halstead.time}}</dd>
+	</dl>
+
+	<h3>Misc</h3>
+	<dl class="dl-horizontal">
+		<dt>Report ID</dt>
+		<dd>{{report._id}}</dd>
+
+		<dt>File Checksum</dt>
+		<dd>{{report.checksum}}</dd>
+	</dl>
+
+	<pre class="brush: js">{{contents}}</pre>
+</div>

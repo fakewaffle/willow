@@ -5,27 +5,18 @@ var fs     = require( 'fs' );
 var path   = require( 'path' );
 
 // Load other modules
-var async     = require( 'async' );
-var mongoose  = require( 'mongoose' );
-var escomplex = require( 'escomplex-js' );
-var cb        = require( '../common/cb' );
-var log       = require( '../common/log' );
-var checksum  = require( '../common/checksum' );
+var async      = require( 'async' );
+var mongoose   = require( 'mongoose' );
+var escomplex  = require( 'escomplex-js' );
+var saveReport = require( './saveReport' );
+var saveFile   = require( './saveFile' );
+var cb         = require( '../common/cb' );
+var log        = require( '../common/log' );
+var checksum   = require( '../common/checksum' );
 
 // Load schemas
 var Report = mongoose.model( 'Report' );
-
-function saveReport ( report, callback ) {
-	report.save( function ( error ) {
-		if ( error ) {
-			return callback( error );
-		}
-
-		log( 2, report.path.green );
-
-		callback();
-	} );
-}
+var File   = mongoose.model( 'File' );
 
 function report ( files, callback ) {
 
@@ -37,7 +28,6 @@ function report ( files, callback ) {
 
 	var project = path.basename( process.cwd() );
 	var now     = new Date();
-	var options = { 'newmi' : true };
 
 	log( 0, 'Generating reports for modified files'.bold );
 
@@ -46,23 +36,23 @@ function report ( files, callback ) {
 		var sha1     = checksum( contents );
 
 		var conditions = {
-			'path'     : file,
-			'checksum' : sha1
+			'path' : file
 		};
 
-		Report.findOne( conditions, function ( error, report ) {
+		var fields  = 'path date checksum';
+		var options = { 'sort' : { 'date' : -1 } };
+
+		Report.findOne( conditions, fields, options, function ( error, document ) {
 			if ( error ) {
 				throw new Error( error );
 			}
 
-			if ( report ) {
+			if ( document && document.checksum === sha1 ) {
 				return callback();
 			}
 
-			var ast = {
-				'path' : file,
-				'code' : contents
-			};
+			var ast     = { 'path' : file, 'code' : contents };
+			var options = { 'newmi' : true };
 
 			var result = escomplex.analyse( [ ast ], options );
 
@@ -79,7 +69,29 @@ function report ( files, callback ) {
 					'dependencies'    : value.dependencies
 				} );
 
-				saveReport( report, callback );
+				var file = new File( {
+					'path'     : value.path,
+					'checksum' : sha1,
+					'contents' : contents
+				} );
+
+				async.series( [
+
+					function ( callback ) {
+						saveFile( file, callback );
+					},
+
+					function ( callback ) {
+						saveReport( report, callback );
+					}
+
+				], function ( error, results ) {
+					if ( !error ) {
+						log( 2, value.path.green );
+					}
+
+					callback( error );
+				} );
 
 			} );
 

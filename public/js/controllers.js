@@ -33,6 +33,15 @@ projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$htt
 
 		$http.get( url ).success( function ( file ) {
 			$scope.contents = file.contents;
+
+			// Hack until I learn about directives and crappy $timeout
+			var editor = ace.edit( 'code' );
+			editor.setReadOnly( true );
+			editor.setShowPrintMargin( false );
+			editor.setValue( file.contents );
+			editor.clearSelection();
+			editor.getSession().setMode( 'ace/mode/javascript' );
+
 		} );
 	} );
 

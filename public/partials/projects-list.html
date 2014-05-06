@@ -1,5 +1,13 @@
+<div class="page-header">
+	<h2>Projects</h2>
+</div>
+
+<div class="form-group">
+	<input ng-model="query" type="text" class="form-control" placeholder="Search">
+</div>
+
 <div class="list-group">
-	<a ng-repeat="name in projects" href="#/projects/{{name}}" class="list-group-item">
+	<a ng-repeat="name in projects | filter:query" href="#/projects/{{name}}" class="list-group-item">
 		{{name}}
 	</a>
 </div>

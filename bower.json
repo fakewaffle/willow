@@ -22,7 +22,6 @@
     "angular": "~1.2.16",
     "angular-route": "~1.2.16",
     "bootstrap": "~3.1.1",
-    "syntaxhighlighter": "git@github.com:alexgorbatchev/syntaxhighlighter.git#~3.0.83",
     "less": "~1.7.0"
   }
 }

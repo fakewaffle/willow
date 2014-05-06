@@ -3,6 +3,8 @@
 </div>
 
 <div class="table-responsive">
+	<input ng-model="query" type="text" class="form-control" placeholder="Search">
+
 	<table class="table table-hover table-striped">
 
 		<thead>
@@ -14,7 +16,7 @@
 		</thead>
 
 		<tbody>
-			<tr ng-repeat="path in paths">
+			<tr ng-repeat="path in paths | filter:query">
 				<td><a href="#/projects/{{name}}/complexity-reports/{{path}}/latest">{{path}}</a></td>
 				<td>0</td>
 				<td>0</td>

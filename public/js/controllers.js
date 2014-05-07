@@ -86,7 +86,7 @@ projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$htt
 		} ];
 
 		$scope.functions = [ {
-			'key'    : 'Dependencies',
+			'key'    : 'Functions',
 			'values' : report.map( function ( value, index ) {
 				return [ new Date( value.date ), value.functions.length ];
 			} )

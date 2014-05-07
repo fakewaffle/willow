@@ -49,7 +49,6 @@ projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$htt
 	} );
 
 	$http.get( url ).success( function ( report ) {
-		console.log( "report:", report );
 
 		$scope.halsteadDifficulty = [ {
 			'key'    : 'Halstead Difficulty',

@@ -117,10 +117,10 @@
 		</div>
 
 		<div class="col-sm-6">
-			<h4>Logical SLOC</h4>
+			<h4>Halstead Time</h4>
 
 		    <nvd3-line-chart
-		        data="logicalSloc"
+		        data="halsteadTime"
 		        height="200"
 		        showXAxis="true"
 		        showYAxis="true"
@@ -153,6 +153,24 @@
 
 		    <nvd3-line-chart
 		        data="functions"
+		        height="200"
+		        showXAxis="true"
+		        showYAxis="true"
+		        tooltips="true"
+		        xAxisTickFormat="xAxisTickFormat()"
+		        interactive="true">
+		    </nvd3-line-chart>
+		</div>
+
+	</div>
+
+	<div class="row">
+
+		<div class="col-sm-6">
+			<h4>Logical SLOC</h4>
+
+		    <nvd3-line-chart
+		        data="logicalSloc"
 		        height="200"
 		        showXAxis="true"
 		        showYAxis="true"

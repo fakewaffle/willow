@@ -57,6 +57,13 @@ projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$htt
 			} )
 		} ];
 
+		$scope.halsteadTime = [ {
+			'key'    : 'Halstead Time',
+			'values' : report.map( function ( value, index ) {
+				return [ new Date( value.date ), Math.round( value.aggregate.halstead.time / 60 * 10 ) / 10 ];
+			} )
+		} ];
+
 		$scope.logicalSloc = [ {
 			'key'    : 'Logical SLOC',
 			'values' : report.map( function ( value, index ) {

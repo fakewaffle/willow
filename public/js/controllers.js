@@ -74,7 +74,7 @@ projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$htt
 		$scope.complexity = [ {
 			'key'    : 'Complexity',
 			'values' : report.map( function ( value, index ) {
-				return [ new Date( value.date ), Math.round( value.aggregate.cyclomatic * 10 ) / 10 ];
+				return [ new Date( value.date ), value.aggregate.cyclomatic ];
 			} )
 		} ];
 

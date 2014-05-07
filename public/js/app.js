@@ -2,10 +2,12 @@
 
 var willowApp = angular.module( 'willowApp', [
 	'ngRoute',
-	'projectsControllers'
+	'projectsControllers',
+	'nvd3ChartDirectives'
 ] );
 
 willowApp.config( [ '$routeProvider', function ( $routeProvider ) {
+
 	$routeProvider
 
 		.when( '/projects', {

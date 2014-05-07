@@ -24,9 +24,9 @@ projectsControllers.controller( 'ProjectsDetailsController', [ '$scope', '$route
 } ] );
 
 projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$http', '$q', function ( $scope, $routeParams, $http, $q ) {
-	var url = '/api/projects/' + $routeParams.projectName + '/complexity-reports/' + $routeParams.path + '/latest';
+	var url = '/api/projects/' + $routeParams.projectName + '/complexity-reports/' + $routeParams.path;
 
-	$http.get( url ).success( function ( report ) {
+	$http.get( url + '/latest' ).success( function ( report ) {
 		$scope.report = report;
 
 		var url = '/api/files/' + report.checksum;
@@ -41,8 +41,64 @@ projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$htt
 			editor.setValue( file.contents );
 			editor.clearSelection();
 			editor.getSession().setMode( 'ace/mode/javascript' );
+			editor.setOptions( {
+				'maxLines' : Infinity
+			} );
 
 		} );
+	} );
+
+	$http.get( url ).success( function ( report ) {
+		console.log( "report:", report );
+
+		$scope.halsteadDifficulty = [ {
+			'key'    : 'Halstead Difficulty',
+			'values' : report.map( function ( value, index ) {
+				return [ new Date( value.date ), Math.round( value.aggregate.halstead.difficulty * 10 ) / 10 ];
+			} )
+		} ];
+
+		$scope.logicalSloc = [ {
+			'key'    : 'Logical SLOC',
+			'values' : report.map( function ( value, index ) {
+				return [ new Date( value.date ), value.aggregate.sloc.logical ];
+			} )
+		} ];
+
+		$scope.maintainability = [ {
+			'key'    : 'Maintainability',
+			'values' : report.map( function ( value, index ) {
+				return [ new Date( value.date ), Math.round( value.maintainability * 10 ) / 10 ];
+			} )
+		} ];
+
+		$scope.complexity = [ {
+			'key'    : 'Complexity',
+			'values' : report.map( function ( value, index ) {
+				return [ new Date( value.date ), Math.round( value.aggregate.cyclomatic * 10 ) / 10 ];
+			} )
+		} ];
+
+		$scope.dependencies = [ {
+			'key'    : 'Dependencies',
+			'values' : report.map( function ( value, index ) {
+				return [ new Date( value.date ), value.dependencies.length ];
+			} )
+		} ];
+
+		$scope.functions = [ {
+			'key'    : 'Dependencies',
+			'values' : report.map( function ( value, index ) {
+				return [ new Date( value.date ), value.functions.length ];
+			} )
+		} ];
+
+		$scope.xAxisTickFormat = function () {
+			return function ( d ) {
+				return d3.time.format( '%x' )( new Date( d ) );
+			};
+		};
+
 	} );
 
 	$scope.name = $routeParams.projectName;

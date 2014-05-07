@@ -61,6 +61,9 @@ module.exports = {
 			'path'    : request.params[ 0 ]
 		};
 
+		var fields  = '';
+		var options = { 'sort' : { 'date' : 1 } };
+
 		Report.find( conditions, fields, options, function ( error, reports ) {
 			if ( error ) {
 				return next( error );

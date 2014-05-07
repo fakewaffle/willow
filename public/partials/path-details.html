@@ -10,80 +10,164 @@
 		</div>
 
 		<div class="panel-body">
-			<dl class="dl-horizontal">
-				<dt>Maintainability</dt>
-				<dd>{{report.maintainability}}</dd>
 
-				<dt>Cyclomatic Complexity</dt>
-				<dd>{{report.aggregate.cyclomatic}}</dd>
+			<div class="row file-details">
 
-				<dt>Dependencies</dt>
-				<dd>{{report.dependencies.length + 1}}</dd>
+				<div class="col-sm-6 col-sm-offset-1">
+					<dl class="dl-horizontal">
+						<dt>Maintainability</dt>
+						<dd>{{report.maintainability | number : 1 }}</dd>
 
-				<dt>Functions</dt>
-				<dd>{{report.functions.length + 1}}</dd>
-			</dl>
-		</div>
+						<dt>Cyclomatic Complexity</dt>
+						<dd>{{report.aggregate.cyclomatic}}</dd>
 
-		<div class="panel-heading">
-			<h3 class="panel-title">Source Lines of Code</h3>
-		</div>
+						<dt>Dependencies</dt>
+						<dd>{{report.dependencies.length + 1}}</dd>
 
-		<div class="panel-body">
-			<dl class="dl-horizontal">
-				<dt>Logical</dt>
-				<dd>{{report.aggregate.sloc.logical}}</dd>
+						<dt>Functions</dt>
+						<dd>{{report.functions.length + 1}}</dd>
 
-				<dt>Physical</dt>
-				<dd>{{report.aggregate.sloc.physical}}</dd>
-			</dl>
-		</div>
+						<dt>Logical SLOC</dt>
+						<dd>{{report.aggregate.sloc.logical}}</dd>
 
+						<dt>Physical SLOC</dt>
+						<dd>{{report.aggregate.sloc.physical}}</dd>
+					</dl>
+				</div>
 
-		<div class="panel-heading">
-			<h3 class="panel-title">Halstead</h3>
-		</div>
+				<div class="col-sm-5">
+					<dl class="dl-horizontal">
+						<dt>Halstead Length</dt>
+						<dd>{{report.aggregate.halstead.length}}</dd>
 
-		<div class="panel-body">
-			<dl class="dl-horizontal">
-				<dt>Halstead Length</dt>
-				<dd>{{report.aggregate.halstead.length}}</dd>
+						<dt>Halstead Vocabulary</dt>
+						<dd>{{report.aggregate.halstead.vocabulary}}</dd>
 
-				<dt>Halstead Vocabulary</dt>
-				<dd>{{report.aggregate.halstead.vocabulary}}</dd>
+						<dt>Halstead Difficulty</dt>
+						<dd>{{report.aggregate.halstead.difficulty | number : 1 }}</dd>
 
-				<dt>Halstead Difficulty</dt>
-				<dd>{{report.aggregate.halstead.difficulty}}</dd>
+						<dt>Halstead Volume</dt>
+						<dd>{{report.aggregate.halstead.volume | number : 1 }}</dd>
 
-				<dt>Halstead Volume</dt>
-				<dd>{{report.aggregate.halstead.volume}}</dd>
+						<dt>Halstead Effort</dt>
+						<dd>{{report.aggregate.halstead.effort | number : 1 }}</dd>
 
-				<dt>Halstead Effort</dt>
-				<dd>{{report.aggregate.halstead.effort}}</dd>
+						<dt>Halstead Bugs</dt>
+						<dd>{{report.aggregate.halstead.bugs | number : 2 }}</dd>
 
-				<dt>Halstead Bugs</dt>
-				<dd>{{report.aggregate.halstead.bugs}}</dd>
+						<dt>Halstead Time</dt>
+						<dd>{{(report.aggregate.halstead.time / 60 ) | date : 1 }} minutes</dd>
+					</dl>
+				</div>
 
-				<dt>Halstead Time</dt>
-				<dd>{{report.aggregate.halstead.time}}</dd>
-			</dl>
-		</div>
+			</div>
 
-		<div class="panel-heading">
-			<h3 class="panel-title">Misc</h3>
-		</div>
-
-		<div class="panel-body">
-			<dl class="dl-horizontal">
-				<dt>Report ID</dt>
-				<dd>{{report._id}}</dd>
-
-				<dt>File Checksum</dt>
-				<dd>{{report.checksum}}</dd>
-			</dl>
 		</div>
 
 	</div>
 
-	<pre id="code">{{contents}}</pre>
+	<div class="row">
+
+		<div class="col-sm-6">
+			<h4>Maintainability</h4>
+
+		    <nvd3-line-chart
+		        data="maintainability"
+		        height="200"
+		        showXAxis="true"
+		        showYAxis="true"
+		        tooltips="true"
+		        xAxisTickFormat="xAxisTickFormat()"
+				forcey="[ 0, 100 ]"
+		        interactive="true">
+		    </nvd3-line-chart>
+		</div>
+
+		<div class="col-sm-6">
+			<h4>Complexity</h4>
+
+		    <nvd3-line-chart
+		        data="complexity"
+		        height="200"
+		        showXAxis="true"
+		        showYAxis="true"
+		        tooltips="true"
+		        xAxisTickFormat="xAxisTickFormat()"
+				forcey="[ 0 ]"
+		        interactive="true">
+		    </nvd3-line-chart>
+		</div>
+
+	</div>
+
+	<div class="row">
+
+		<div class="col-sm-6">
+			<h4>Halstead Difficulty</h4>
+
+		    <nvd3-line-chart
+		        data="halsteadDifficulty"
+		        height="200"
+		        showXAxis="true"
+		        showYAxis="true"
+		        tooltips="true"
+		        xAxisTickFormat="xAxisTickFormat()"
+		        interactive="true">
+		    </nvd3-line-chart>
+		</div>
+
+		<div class="col-sm-6">
+			<h4>Logical SLOC</h4>
+
+		    <nvd3-line-chart
+		        data="logicalSloc"
+		        height="200"
+		        showXAxis="true"
+		        showYAxis="true"
+		        tooltips="true"
+		        xAxisTickFormat="xAxisTickFormat()"
+		        interactive="true">
+		    </nvd3-line-chart>
+		</div>
+
+	</div>
+
+	<div class="row">
+
+		<div class="col-sm-6">
+			<h4>Dependencies</h4>
+
+		    <nvd3-line-chart
+		        data="dependencies"
+		        height="200"
+		        showXAxis="true"
+		        showYAxis="true"
+		        tooltips="true"
+		        xAxisTickFormat="xAxisTickFormat()"
+		        interactive="true">
+		    </nvd3-line-chart>
+		</div>
+
+		<div class="col-sm-6">
+			<h4>Functions</h4>
+
+		    <nvd3-line-chart
+		        data="functions"
+		        height="200"
+		        showXAxis="true"
+		        showYAxis="true"
+		        tooltips="true"
+		        xAxisTickFormat="xAxisTickFormat()"
+		        interactive="true">
+		    </nvd3-line-chart>
+		</div>
+
+	</div>
+
+
+	<h3>File Contents</h3>
+	<pre id="code">Loading...</pre>
+
+	<p>Report ID: {{report._id}}</p>
+	<p>File Contents Checksum: {{report.checksum}}</p>
 </div>

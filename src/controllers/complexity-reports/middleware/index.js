@@ -4,7 +4,7 @@
 var mongoose = require( 'mongoose' );
 
 // Load models
-var Report = mongoose.model( 'Report' );
+var ComplexityReport = mongoose.model( 'ComplexityReport' );
 
 var fields = '';
 var fields = 'project path date maintainability';
@@ -14,7 +14,7 @@ module.exports = {
 	'getAllComplexityReports' : function ( request, response, next  ) {
 		var conditions = { };
 
-		Report.find( conditions, fields, function ( error, reports ) {
+		ComplexityReport.find( conditions, fields, function ( error, reports ) {
 			if ( error ) {
 				return next( error );
 			}
@@ -24,7 +24,7 @@ module.exports = {
 	},
 
 	'getComplexityReportById' : function ( request, response, next  ) {
-		Report.findById( request.params.reportId, function ( error, report ) {
+		ComplexityReport.findById( request.params.reportId, function ( error, report ) {
 			if ( error ) {
 				return next( error );
 			}

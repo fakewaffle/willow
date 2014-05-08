@@ -5,15 +5,10 @@ var mongoose = require( 'mongoose' );
 var Schema   = mongoose.Schema;
 
 var Report = new Schema( {
-	'project'         : String,
-	'path'            : String,
-	'checksum'        : String,
-	'date'            : Date,
-	'maintainability' : Number,
-	'params'          : Number,
-	'functions'       : Array,
-	'dependencies'    : Array,
-	'aggregate'       : Object
+	'project'      : String,
+	'paths'        : Array,
+	'changedPaths' : Array,
+	'date'         : Date
 } );
 
 mongoose.model( 'Report', Report );

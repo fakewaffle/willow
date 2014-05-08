@@ -19,7 +19,30 @@
 
 		<tbody>
 			<tr ng-repeat="path in paths | filter:query">
-				<td><a href="#/projects/{{name}}/complexity-reports/{{path}}/latest">{{path}}</a></td>
+				<td><a href="#/projects/{{name}}/complexity-reports/{{path.path}}/latest">{{path.path}}</a></td>
+				<td>0</td>
+				<td>0</td>
+			</tr>
+		</tbody>
+
+	</table>
+</div>
+
+<h3>Most Recently Changed Files</h3>
+<div class="table-responsive">
+	<table class="table table-hover table-striped">
+
+		<thead>
+			<tr>
+				<th>File</th>
+				<th>Maintainability</th>
+				<th>Lint Errors</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr ng-repeat="changedPath in changedPaths | filter:query">
+				<td><a href="#/projects/{{name}}/complexity-reports/{{changedPath.path}}/latest">{{changedPath.path}}</a></td>
 				<td>0</td>
 				<td>0</td>
 			</tr>

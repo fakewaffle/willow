@@ -11,12 +11,11 @@ projectsControllers.controller( 'ProjectsListController', [ '$scope', '$http', f
 } ] );
 
 projectsControllers.controller( 'ProjectsDetailsController', [ '$scope', '$routeParams', '$http', '$q', function ( $scope, $routeParams, $http, $q ) {
-	var details = $http.get( '/api/projects/' + $routeParams.projectName );
-	var paths   = $http.get( '/api/projects/' + $routeParams.projectName + '/paths' );
+	var url = '/api/projects/' + $routeParams.projectName;
 
-	$q.all( { 'details' : details, 'paths' : paths } ).then( function ( results ) {
-		$scope.details = results.details.data;
-		$scope.paths   = results.paths.data;
+	$http.get( url  ).success( function ( report ) {
+		$scope.changedPaths = report.changedPaths;
+		$scope.paths        = report.paths;
 	} );
 
 	$scope.name = $routeParams.projectName;

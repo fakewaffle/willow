@@ -9,11 +9,14 @@ var async     = require( 'async' );
 var mongoose  = require( 'mongoose' );
 var escomplex = require( 'escomplex-js' );
 
+require( 'colors' );
+
 // Load local files
 var saveDocument = require( './saveDocument' );
 var cb           = require( '../common/cb' );
 var log          = require( '../common/log' );
 var checksum     = require( '../common/checksum' );
+var getProperty  = require( '../common/getProperty' );
 
 // Load schemas
 var Report           = mongoose.model( 'Report' );
@@ -28,8 +31,13 @@ function report ( files, callback ) {
 		return cb();
 	}
 
+	var now = new Date();
+	if ( process.env.WILLOW_DATE ) {
+		now = new Date( process.env.WILLOW_DATE );
+	}
+
 	var project      = path.basename( process.cwd() );
-	var now          = new Date();
+	var paths        = [ ];
 	var allPaths     = [ ];
 	var changedPaths = [ ];
 
@@ -53,56 +61,79 @@ function report ( files, callback ) {
 				throw new Error( error );
 			}
 
-			// Don't run the complexity report for a file that has not changed
-			if ( document && document.checksum === sha1 ) {
-				return callback();
-			}
-
-			changedPaths.push( {
-				'path'     : file,
-				'checksum' : sha1
-			} );
+			var results;
 
 			var ast     = { 'path' : file, 'code' : contents };
 			var options = { 'newmi' : true };
 
-			var result = escomplex.analyse( [ ast ], options );
+			try {
+				results = escomplex.analyse( [ ast ], options );
+			} catch ( error ) {
+				return callback();
+			}
 
-			result.reports.forEach( function ( value, index ) {
+			try {
+				var BreakException = { };
 
-				async.series( [
+				results.reports.forEach( function ( result, index ) {
 
-					function ( callback ) {
-						saveDocument( new File( {
-							'path'     : file,
-							'checksum' : sha1,
-							'contents' : contents
-						} ), callback );
-					},
-
-					function ( callback ) {
-						saveDocument( new ComplexityReport( {
-							'project'         : project,
+					// Push in all data so we can compute averages for the report
+					if ( file && sha1 && result && result.maintainability && result.aggregate ) {
+						paths.push( {
 							'path'            : file,
 							'checksum'        : sha1,
-							'date'            : now,
-							'maintainability' : value.maintainability,
-							'params'          : value.params,
-							'aggregate'       : value.aggregate,
-							'functions'       : value.functions,
-							'dependencies'    : value.dependencies
-						} ), callback );
+							'maintainability' : result.maintainability,
+							'aggregate'       : result.aggregate
+						} );
 					}
 
-				], function ( error, results ) {
-					if ( !error ) {
-						log( 2, value.path.green );
+					// Don't continue to run the complexity report for a file that has not changed
+					// We stop here so we can compute the averages
+					if ( document && document.checksum === sha1 ) {
+						throw BreakException;
 					}
 
-					callback( error );
+					changedPaths.push( {
+						'path'     : file,
+						'checksum' : sha1
+					} );
+
+					async.series( [
+
+						function ( callback ) {
+							saveDocument( new File( {
+								'path'     : file,
+								'checksum' : sha1,
+								'contents' : contents
+							} ), callback );
+						},
+
+						function ( callback ) {
+							saveDocument( new ComplexityReport( {
+								'project'         : project,
+								'path'            : file,
+								'checksum'        : sha1,
+								'date'            : now,
+								'maintainability' : result.maintainability,
+								'params'          : result.params,
+								'aggregate'       : result.aggregate,
+								'functions'       : result.functions,
+								'dependencies'    : result.dependencies
+							} ), callback );
+						}
+
+					], function ( error, results ) {
+						if ( !error ) {
+							log( 2, result.path.green );
+						}
+
+						callback( error );
+					} );
+
 				} );
-
-			} );
+			} catch ( error ) {
+				callback();
+			}
 
 		} );
 
@@ -111,12 +142,30 @@ function report ( files, callback ) {
 			throw new Error( error );
 		}
 
+		function setAverage ( value, nested ) {
+			var average = 0;
+
+			paths.forEach( function ( path, index ) {
+				average += getProperty( path, nested );
+			} );
+
+			averages[ value ] = average / ( paths.length + 1 );
+		}
+
 		if ( allPaths.length && changedPaths.length ) {
+			var averages = { };
+
+			setAverage( 'maintainability', 'maintainability' );
+			setAverage( 'logicalSloc', 'aggregate.sloc.logical' );
+			setAverage( 'cyclomatic', 'aggregate.cyclomatic' );
+			setAverage( 'halsteadTime', 'aggregate.halstead.time' );
+
 			return saveDocument( new Report( {
 				'project'      : project,
 				'date'         : now,
 				'paths'        : allPaths,
-				'changedPaths' : changedPaths
+				'changedPaths' : changedPaths,
+				'averages'     : averages
 			} ), callback );
 		}
 

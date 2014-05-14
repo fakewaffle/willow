@@ -1,191 +1,203 @@
-<div class="row">
-	<div class="page-header">
-		<h2>{{path}}</h2>
+<div class="page-header">
+	<h2>{{path}}</h2>
+</div>
+
+<div class="panel panel-default">
+
+	<div class="panel-heading">
+		<h3 class="panel-title">Overview</h3>
 	</div>
 
-	<div class="panel panel-default">
+	<div class="panel-body">
 
-		<div class="panel-heading">
-			<h3 class="panel-title">Overview</h3>
-		</div>
+		<div class="row file-details">
 
-		<div class="panel-body">
+			<div class="col-sm-6 col-sm-offset-1">
+				<dl class="dl-horizontal">
+					<dt>Maintainability</dt>
+					<dd>{{report.maintainability | number : 1}}</dd>
 
-			<div class="row file-details">
+					<dt>Cyclomatic Complexity</dt>
+					<dd>{{report.aggregate.cyclomatic}}</dd>
 
-				<div class="col-sm-6 col-sm-offset-1">
-					<dl class="dl-horizontal">
-						<dt>Maintainability</dt>
-						<dd>{{report.maintainability | number : 1 }}</dd>
+					<dt>Dependencies</dt>
+					<dd>{{report.dependencies.length + 1}}</dd>
 
-						<dt>Cyclomatic Complexity</dt>
-						<dd>{{report.aggregate.cyclomatic}}</dd>
+					<dt>Functions</dt>
+					<dd>{{report.functions.length + 1}}</dd>
 
-						<dt>Dependencies</dt>
-						<dd>{{report.dependencies.length + 1}}</dd>
+					<dt>Logical SLOC</dt>
+					<dd>{{report.aggregate.sloc.logical}}</dd>
 
-						<dt>Functions</dt>
-						<dd>{{report.functions.length + 1}}</dd>
+					<dt>Physical SLOC</dt>
+					<dd>{{report.aggregate.sloc.physical}}</dd>
+				</dl>
+			</div>
 
-						<dt>Logical SLOC</dt>
-						<dd>{{report.aggregate.sloc.logical}}</dd>
+			<div class="col-sm-5">
+				<dl class="dl-horizontal">
+					<dt>Halstead Length</dt>
+					<dd>{{report.aggregate.halstead.length}}</dd>
 
-						<dt>Physical SLOC</dt>
-						<dd>{{report.aggregate.sloc.physical}}</dd>
-					</dl>
-				</div>
+					<dt>Halstead Vocabulary</dt>
+					<dd>{{report.aggregate.halstead.vocabulary}}</dd>
 
-				<div class="col-sm-5">
-					<dl class="dl-horizontal">
-						<dt>Halstead Length</dt>
-						<dd>{{report.aggregate.halstead.length}}</dd>
+					<dt>Halstead Difficulty</dt>
+					<dd>{{report.aggregate.halstead.difficulty | number : 1}}</dd>
 
-						<dt>Halstead Vocabulary</dt>
-						<dd>{{report.aggregate.halstead.vocabulary}}</dd>
+					<dt>Halstead Volume</dt>
+					<dd>{{report.aggregate.halstead.volume | number : 1}}</dd>
 
-						<dt>Halstead Difficulty</dt>
-						<dd>{{report.aggregate.halstead.difficulty | number : 1 }}</dd>
+					<dt>Halstead Effort</dt>
+					<dd>{{report.aggregate.halstead.effort | number : 1}}</dd>
 
-						<dt>Halstead Volume</dt>
-						<dd>{{report.aggregate.halstead.volume | number : 1 }}</dd>
+					<dt>Halstead Bugs</dt>
+					<dd>{{report.aggregate.halstead.bugs | number : 2}}</dd>
 
-						<dt>Halstead Effort</dt>
-						<dd>{{report.aggregate.halstead.effort | number : 1 }}</dd>
-
-						<dt>Halstead Bugs</dt>
-						<dd>{{report.aggregate.halstead.bugs | number : 2 }}</dd>
-
-						<dt>Halstead Time</dt>
-						<dd>{{( report.aggregate.halstead.time / 60 ) | number : 1 }} minutes</dd>
-					</dl>
-				</div>
-
+					<dt>Halstead Time</dt>
+					<dd>{{( report.aggregate.halstead.time / 60 ) | number : 1}} minutes</dd>
+				</dl>
 			</div>
 
 		</div>
 
 	</div>
 
-	<div class="row">
-
-		<div class="col-sm-6">
-			<h4>Maintainability</h4>
-
-		    <nvd3-line-chart
-		        data="maintainability"
-		        height="200"
-		        showXAxis="true"
-		        showYAxis="true"
-		        tooltips="true"
-		        xAxisTickFormat="xAxisTickFormat()"
-				forcey="[ 0, 100 ]"
-		        interactive="true">
-		    </nvd3-line-chart>
-		</div>
-
-		<div class="col-sm-6">
-			<h4>Cyclomatic Complexity</h4>
-
-		    <nvd3-line-chart
-		        data="complexity"
-		        height="200"
-		        showXAxis="true"
-		        showYAxis="true"
-		        tooltips="true"
-		        xAxisTickFormat="xAxisTickFormat()"
-				forcey="[ 0 ]"
-		        interactive="true">
-		    </nvd3-line-chart>
-		</div>
-
-	</div>
-
-	<div class="row">
-
-		<div class="col-sm-6">
-			<h4>Halstead Difficulty</h4>
-
-		    <nvd3-line-chart
-		        data="halsteadDifficulty"
-		        height="200"
-		        showXAxis="true"
-		        showYAxis="true"
-		        tooltips="true"
-		        xAxisTickFormat="xAxisTickFormat()"
-		        interactive="true">
-		    </nvd3-line-chart>
-		</div>
-
-		<div class="col-sm-6">
-			<h4>Halstead Time</h4>
-
-		    <nvd3-line-chart
-		        data="halsteadTime"
-		        height="200"
-		        showXAxis="true"
-		        showYAxis="true"
-		        tooltips="true"
-		        xAxisTickFormat="xAxisTickFormat()"
-		        interactive="true">
-		    </nvd3-line-chart>
-		</div>
-
-	</div>
-
-	<div class="row">
-
-		<div class="col-sm-6">
-			<h4>Dependencies</h4>
-
-		    <nvd3-line-chart
-		        data="dependencies"
-		        height="200"
-		        showXAxis="true"
-		        showYAxis="true"
-		        tooltips="true"
-		        xAxisTickFormat="xAxisTickFormat()"
-		        interactive="true">
-		    </nvd3-line-chart>
-		</div>
-
-		<div class="col-sm-6">
-			<h4>Functions</h4>
-
-		    <nvd3-line-chart
-		        data="functions"
-		        height="200"
-		        showXAxis="true"
-		        showYAxis="true"
-		        tooltips="true"
-		        xAxisTickFormat="xAxisTickFormat()"
-		        interactive="true">
-		    </nvd3-line-chart>
-		</div>
-
-	</div>
-
-	<div class="row">
-
-		<div class="col-sm-6">
-			<h4>Logical SLOC</h4>
-
-		    <nvd3-line-chart
-		        data="logicalSloc"
-		        height="200"
-		        showXAxis="true"
-		        showYAxis="true"
-		        tooltips="true"
-		        xAxisTickFormat="xAxisTickFormat()"
-		        interactive="true">
-		    </nvd3-line-chart>
-		</div>
-
-	</div>
-
-
-	<h3>File Contents</h3>
-	<pre id="code">Loading...</pre>
-
-	<p>Report ID: {{report._id}}</p>
-	<p>File Contents Checksum: {{report.checksum}}</p>
 </div>
+
+<div class="row">
+
+	<div class="col-sm-6">
+		<h4>Maintainability</h4>
+
+		<nvd3-line-chart
+			data="maintainability"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			xAxisTickFormat="xAxisTickFormat()"
+			forcey="[ 0, 100 ]"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+	<div class="col-sm-6">
+		<h4>Cyclomatic Complexity</h4>
+
+		<nvd3-line-chart
+			data="complexity"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			xAxisTickFormat="xAxisTickFormat()"
+			forcey="[ 0 ]"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+</div>
+
+<div class="row">
+
+	<div class="col-sm-6">
+		<h4>Halstead Difficulty</h4>
+
+		<nvd3-line-chart
+			data="halsteadDifficulty"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			xAxisTickFormat="xAxisTickFormat()"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+	<div class="col-sm-6">
+		<h4>Halstead Time</h4>
+
+		<nvd3-line-chart
+			data="halsteadTime"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			xAxisTickFormat="xAxisTickFormat()"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+</div>
+
+<div class="row">
+
+	<div class="col-sm-6">
+		<h4>Dependencies</h4>
+
+		<nvd3-line-chart
+			data="dependencies"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			xAxisTickFormat="xAxisTickFormat()"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+	<div class="col-sm-6">
+		<h4>Functions</h4>
+
+		<nvd3-line-chart
+			data="functions"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			xAxisTickFormat="xAxisTickFormat()"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+</div>
+
+<div class="row">
+
+	<div class="col-sm-6">
+		<h4>Logical SLOC</h4>
+
+		<nvd3-line-chart
+			data="logicalSloc"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			xAxisTickFormat="xAxisTickFormat()"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+	<div class="col-sm-6">
+		<h4>Physical SLOC</h4>
+
+		<nvd3-line-chart
+			data="physicalSloc"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			xAxisTickFormat="xAxisTickFormat()"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+</div>
+
+
+<h3>File Contents</h3>
+<pre id="code">Loading...</pre>
+
+<p>Report ID: {{report._id}}</p>
+<p>File Contents Checksum: {{report.checksum}}</p>

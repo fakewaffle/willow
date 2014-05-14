@@ -1,28 +1,94 @@
 'use strict';
 
+function xAxisTickFormat () {
+	return function ( value ) {
+		return d3.time.format( '%x' )( new Date( value ) );
+	};
+}
+
+function yAxisTickFormat () {
+	return function ( value ) {
+		return value.toFixed( 1 );
+	};
+}
+
+// Related to duplicate values in x. Maybe relevant?:
+// http://stackoverflow.com/questions/21075245/nvd3-prevent-repeated-values-on-y-axis
+// http://stackoverflow.com/questions/21667424/duplicate-dates-on-x-axis
+function hack ( value ) {
+	return value + Math.random() / 1000;
+}
+
 var projectsControllers = angular.module( 'projectsControllers', [ ] );
 
-projectsControllers.controller( 'ProjectsListController', [ '$scope', '$http', function ( $scope, $http ) {
+projectsControllers.controller( 'ProjectsListController', function ( $scope, $http ) {
 
 	$http.get( '/api/projects' ).success( function ( data ) {
 		$scope.projects = data;
 	} );
 
-} ] );
+} );
 
-projectsControllers.controller( 'ProjectsDetailsController', [ '$scope', '$routeParams', '$http', '$q', function ( $scope, $routeParams, $http, $q ) {
-	var url = '/api/projects/' + $routeParams.projectName;
+projectsControllers.controller( 'ProjectsDetailsController', function ( $scope, $routeParams, $http, $q ) {
+	var requests = {
+		'details'  : $http.get( '/api/projects/' + $routeParams.projectName ),
+		'averages' : $http.get( '/api/projects/' + $routeParams.projectName + '/averages' )
+	};
 
-	$http.get( url  ).success( function ( report ) {
-		$scope.changedPaths = report.changedPaths;
-		$scope.paths        = report.paths;
+	$scope.name            = $routeParams.projectName;
+	$scope.xAxisTickFormat = xAxisTickFormat;
+	$scope.yAxisTickFormat = yAxisTickFormat;
+
+	$q.all( requests ).then( function ( response ) {
+		$scope.fileCount    = Object.keys( response.details.data.paths ).length + 1;
+		$scope.averages     = response.details.data.averages;
+		$scope.changedPaths = response.details.data.changedPaths;
+		$scope.paths        = response.details.data.paths;
+
+		var averages = response.averages.data;
+
+		// function uniq ( name ) {
+		// 	return _.uniq( averages.map( function ( value, index ) {
+		// 		return {
+		// 			'date'  : value.date,
+		// 			'value' : value[ name ]
+		// 		};
+		// 	} ), 'value' );
+		// }
+
+		$scope.maintainability = [ {
+			'key'    : 'Maintainability',
+			'values' : averages.map( function ( value, index ) {
+				return [ index, value.maintainability ];
+			} )
+		} ];
+
+		$scope.complexity = [ {
+			'key'    : 'Cyclomatic Complexity',
+			'values' : averages.map( function ( value, index ) {
+				return [ index, value.cyclomatic ];
+			} )
+		} ];
+
+		$scope.halsteadTime = [ {
+			'key'    : 'Halstead Time',
+			'values' : averages.map( function ( value, index ) {
+				return [ index, value.halsteadTime / 60 ];
+			} )
+		} ];
+
+		$scope.logicalSloc = [ {
+			'key'    : 'Logical SLOC',
+			'values' : averages.map( function ( value, index ) {
+				return [ index, value.logicalSloc ];
+			} )
+		} ];
+
 	} );
 
-	$scope.name = $routeParams.projectName;
+} );
 
-} ] );
-
-projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$http', '$q', function ( $scope, $routeParams, $http, $q ) {
+projectsControllers.controller( 'PathDetails', function ( $scope, $routeParams, $http, $q ) {
 	var url = '/api/projects/' + $routeParams.projectName + '/complexity-reports/' + $routeParams.path;
 
 	$http.get( url + '/latest' ).success( function ( report ) {
@@ -48,6 +114,7 @@ projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$htt
 	} );
 
 	$http.get( url ).success( function ( report ) {
+		$scope.xAxisTickFormat = xAxisTickFormat;
 
 		$scope.halsteadDifficulty = [ {
 			'key'    : 'Halstead Difficulty',
@@ -67,6 +134,13 @@ projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$htt
 			'key'    : 'Logical SLOC',
 			'values' : report.map( function ( value, index ) {
 				return [ new Date( value.date ), value.aggregate.sloc.logical ];
+			} )
+		} ];
+
+		$scope.physicalSloc = [ {
+			'key'    : 'Physical SLOC',
+			'values' : report.map( function ( value, index ) {
+				return [ new Date( value.date ), value.aggregate.sloc.physical ];
 			} )
 		} ];
 
@@ -98,15 +172,10 @@ projectsControllers.controller( 'PathDetails', [ '$scope', '$routeParams', '$htt
 			} )
 		} ];
 
-		$scope.xAxisTickFormat = function () {
-			return function ( d ) {
-				return d3.time.format( '%x' )( new Date( d ) );
-			};
-		};
-
 	} );
 
 	$scope.name = $routeParams.projectName;
 	$scope.path = $routeParams.path;
 
-} ] );
+} );
+

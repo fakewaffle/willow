@@ -6,9 +6,10 @@ var Schema   = mongoose.Schema;
 
 var Report = new Schema( {
 	'project'      : String,
+	'date'         : Date,
 	'paths'        : Array,
 	'changedPaths' : Array,
-	'date'         : Date
+	'averages'     : Object
 } );
 
 mongoose.model( 'Report', Report );

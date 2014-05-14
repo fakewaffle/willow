@@ -2,49 +2,141 @@
 	<h2>{{name}}</h2>
 </div>
 
+<div class="panel panel-default">
+
+	<div class="panel-heading">
+		<h3 class="panel-title">Overview</h3>
+	</div>
+
+	<div class="panel-body">
+
+
+		<div class="row file-details">
+
+			<div class="col-sm-6 col-sm-offset-1">
+				<dl class="dl-horizontal">
+					<dt>Total Files</dt>
+					<dd>{{fileCount}}</dd>
+
+					<dt>Maintainability</dt>
+					<dd>{{averages.maintainability | number : 1}}</dd>
+
+					<dt>Cyclomatic Complexity</dt>
+					<dd>{{averages.cyclomatic | number : 1}}</dd>
+
+					<dt>Logical SLOC</dt>
+					<dd>{{averages.logicalSloc | number : 1}}</dd>
+
+					<dt>Halstead Time</dt>
+					<dd>{{( averages.halsteadTime / 60 ) | number : 1}} minutes</dd>
+				</dl>
+			</div>
+
+			<div class="col-sm-5"></div>
+
+		</div>
+
+	</div>
+</div>
+
+<div class="row">
+
+	<div class="col-sm-6">
+		<h4>Maintainability</h4>
+
+		<nvd3-line-chart
+			data="maintainability"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			yAxisTickFormat="yAxisTickFormat()"
+			forcey="[ 0, 100 ]"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+	<div class="col-sm-6">
+		<h4>Cyclomatic Complexity</h4>
+
+		<nvd3-line-chart
+			data="complexity"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			yAxisTickFormat="yAxisTickFormat()"
+			forcey="[ 0 ]"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+</div>
+
+<div class="row">
+
+	<div class="col-sm-6">
+		<h4>Halstead Time</h4>
+
+		<nvd3-line-chart
+			data="halsteadTime"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			yAxisTickFormat="yAxisTickFormat()"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+	<div class="col-sm-6">
+		<h4>Logical SLOC</h4>
+
+		<nvd3-line-chart
+			data="logicalSloc"
+			height="200"
+			showXAxis="true"
+			showYAxis="true"
+			tooltips="true"
+			yAxisTickFormat="yAxisTickFormat()"
+			interactive="true">
+		</nvd3-line-chart>
+	</div>
+
+</div>
+
 <div class="form-group">
 	<input ng-model="query" type="text" class="form-control" placeholder="Search">
 </div>
 
+<h3>Recently Changed Files ( {{changedPaths.length}} )</h3>
 <div class="table-responsive">
 	<table class="table table-hover table-striped">
 
-		<thead>
-			<tr>
-				<th>File</th>
-				<th>Maintainability</th>
-				<th>Lint Errors</th>
-			</tr>
-		</thead>
-
 		<tbody>
-			<tr ng-repeat="path in paths | filter:query">
-				<td><a href="#/projects/{{name}}/complexity-reports/{{path.path}}/latest">{{path.path}}</a></td>
-				<td>0</td>
-				<td>0</td>
+			<tr ng-repeat="changedPath in changedPaths | filter:query">
+				<td><a href="#/projects/{{name}}/complexity-reports/{{changedPath.path}}/latest">{{changedPath.path}}</a></td>
 			</tr>
 		</tbody>
 
 	</table>
 </div>
 
-<h3>Most Recently Changed Files</h3>
+<h3>Total Files ( {{paths.length}} )</h3>
 <div class="table-responsive">
 	<table class="table table-hover table-striped">
 
 		<thead>
 			<tr>
-				<th>File</th>
-				<th>Maintainability</th>
-				<th>Lint Errors</th>
+				<th class="file-name">File</th>
+				<th class="file-stat">Maintainability</th>
 			</tr>
 		</thead>
 
 		<tbody>
-			<tr ng-repeat="changedPath in changedPaths | filter:query">
-				<td><a href="#/projects/{{name}}/complexity-reports/{{changedPath.path}}/latest">{{changedPath.path}}</a></td>
-				<td>0</td>
-				<td>0</td>
+			<tr ng-repeat="path in paths | filter:query">
+				<td><a href="#/projects/{{name}}/complexity-reports/{{path.path}}/latest">{{path.path}}</a></td>
+				<td>{{path.maintainability | number : 1 }}</td>
 			</tr>
 		</tbody>
 

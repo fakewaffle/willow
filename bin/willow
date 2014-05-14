@@ -2,12 +2,7 @@
 'use strict';
 
 // Load other modules
-var program       = require( 'commander' );
-var getFiles      = require( '../src/common/getFiles' );
-var startMongoose = require( '../src/common/startMongoose' );
-var startExpress  = require( '../src/common/startExpress' );
-
-require( 'colors' );
+var program = require( 'commander' );
 
 program.version( require( '../package.json' ).version );
 
@@ -15,14 +10,22 @@ program
 	.command( 'cr' )
 	.description( 'Runs escomplex and saves to MongoDB' )
 
-	.action( function ( cmd ) {
-		startMongoose( function () {
-			var cr = require( '../src/reports' );
+	.option( '-d, --date [date]', 'date for complexity report' )
 
-			cr( getFiles(), function () {
-				process.exit();
-			} );
-		} );
+	.action( function ( cmd ) {
+		if ( cmd.date ) {
+			process.env.WILLOW_DATE = cmd.date;
+		}
+
+		require( './cr' );
+	} );
+
+program
+	.command( 'history' )
+	.description( 'Runs the cr command for each commit' )
+
+	.action( function ( cmd ) {
+		require( './history' );
 	} );
 
 program
@@ -30,11 +33,7 @@ program
 	.description( 'Starts the web server' )
 
 	.action( function ( cmd ) {
-		startMongoose( function () {
-			startExpress( function () {
-
-			} )
-		} );
+		require( './start' );
 	} );
 
 program.parse( process.argv );

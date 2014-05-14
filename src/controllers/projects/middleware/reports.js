@@ -3,7 +3,7 @@
 // Load other modules
 var mongoose = require( 'mongoose' );
 
-// Load models
+ // Load models
 var Report = mongoose.model( 'Report' );
 
 var options = { 'sort' : { 'date' : -1 } };
@@ -34,23 +34,34 @@ module.exports = {
 			}
 
 			response.send( report );
+
 		} );
+
 	},
 
-	'getPathsForProject' : function ( request, response, next  ) {
+	'getProjectAverages' : function ( request, response, next ) {
 		var conditions = { 'project' : request.params.project };
-		var fields     = 'paths';
+		var fields     = 'date averages';
 
-		Report.findOne( conditions, fields, options, function ( error, report ) {
+		Report.find( conditions, fields, function ( error, reports ) {
 			if ( error ) {
 				return next( error );
 			}
 
-			if ( !report ) {
+			if ( !reports.length ) {
 				return next( 404 );
 			}
 
-			response.send( report.paths );
+			var averages = reports.map( function ( report ) {
+				var average = report.averages;
+
+				average.date = report.date;
+
+				return average;
+			} );
+
+			response.send( averages );
+
 		} );
 	}
 

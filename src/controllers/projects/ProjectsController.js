@@ -19,8 +19,8 @@ module.exports = [
 
 	{
 		'method'     : 'get',
-		'route'      : 'projects/:project/paths',
-		'middleware' : middleware.getPathsForProject
+		'route'      : 'projects/:project/averages',
+		'middleware' : middleware.getProjectAverages
 	},
 
 	{

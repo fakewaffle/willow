@@ -4,9 +4,9 @@ var willowApp = angular.module( 'willowApp', [
 	'ngRoute',
 	'projectsControllers',
 	'nvd3ChartDirectives'
-] );
+] )
 
-willowApp.config( [ '$routeProvider', function ( $routeProvider ) {
+.config( function ( $routeProvider ) {
 
 	$routeProvider
 
@@ -25,4 +25,4 @@ willowApp.config( [ '$routeProvider', function ( $routeProvider ) {
 			'templateUrl' : '/partials/path-details.html'
 		} );
 
-} ] );
+} );

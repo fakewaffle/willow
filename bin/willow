@@ -33,7 +33,7 @@ program
 	.description( 'Starts the web server' )
 
 	.action( function ( cmd ) {
-		require( './start' );
+		require( './server' );
 	} );
 
 program.parse( process.argv );
